@@ -1,19 +1,24 @@
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.security.auth.x500.X500Principal;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
+import java.awt.geom.Line2D;
 
 public class Conversor_Bases_Numericas {
     private static final String[] chars = {"0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"};
-    
     public static void main(String[] args) {
-        
+    	
         String[] valoresBases = {"2","3","4","5","6","7","8","9","10","11","12","13","14","15","16"};
         
         //ACA GENERAMOS LOS ESPACIOS EN BLANCO
@@ -29,11 +34,12 @@ public class Conversor_Bases_Numericas {
         
         JButton boton = new JButton("Convertir");
         
-        JFrame x = new JFrame("TAREA DISEÑO LÓGICO");
+        JFrame x = new JFrame("TAREA DISENO LOGICO");
         x.setLayout(new GridBagLayout());
         
+        
         //ACA SE GENERAN LOS TEXTOS EN PANTALLA
-        x.add(new JLabel("Número "), new GridBagConstraints(0,0,1,1,0,0,21,0,new Insets(4,4,2,2),0,0));
+        x.add(new JLabel("Numero "), new GridBagConstraints(0,0,1,1,0,0,21,0,new Insets(4,4,2,2),0,0));
         x.add(new JLabel("Binario "), new GridBagConstraints(0,4,1,1,0,0,21,0,new Insets(4,4,2,2),0,0));
         x.add(new JLabel("Octal "), new GridBagConstraints(0,6,1,1,0,0,21,0,new Insets(4,4,2,2),0,0));
         x.add(new JLabel("Decimal "), new GridBagConstraints(0,7,1,1,0,0,21,0,new Insets(2,4,2,2),0,0));
@@ -53,10 +59,11 @@ public class Conversor_Bases_Numericas {
         x.pack();
         x.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         x.setLocationRelativeTo(null);
+       
         
         boton.addActionListener(new ActionListener(){
 
-            @Override public void actionPerformed(ActionEvent e) {
+			@Override public void actionPerformed(ActionEvent e) {
             	numeroDeUsuario.setText(numeroDeUsuario.getText().toUpperCase());
                 String numeroEditable = numeroDeUsuario.getText();
                 if(ComprobarNumero(numeroEditable, base1.getSelectedIndex()+2)){
@@ -81,21 +88,24 @@ public class Conversor_Bases_Numericas {
                     numeroEnOctal.setText( transformarDecimalABase(numeroEditable, base2.getSelectedIndex()+8) );
                     numeroEnDecimal.setText( transformarDecimalABase(numeroEditable, base2.getSelectedIndex()+10) );
                     
+                    //ACA SE LLAMA LA FUNCI�N QUE DIBUJA EL NRZI
+                    drawNRZI(numeroEditable, base2);
                     
                     //COMPROBACION DEL FORMATO DEL NUMERO
                 } else if(numeroEditable.contains(",")){
-                	numeroEnBinario.setText("ERROR: Formato Inválido");
-                	numeroEnOctal.setText("ERROR: Formato Inválido");
-                	numeroEnDecimal.setText("ERROR: Formato Inválido");
+                	numeroEnBinario.setText("ERROR: Formato Invalido");
+                	numeroEnOctal.setText("ERROR: Formato Invalido");
+                	numeroEnDecimal.setText("ERROR: Formato Invalido");
                 } else if (numeroEditable.isEmpty()){
-                	numeroEnBinario.setText("Ingrese un número");
-                	numeroEnOctal.setText("Ingrese un número");
-                	numeroEnDecimal.setText("Ingrese un número");
+                	numeroEnBinario.setText("Ingrese un numero");
+                	numeroEnOctal.setText("Ingrese un numero");
+                	numeroEnDecimal.setText("Ingrese un numero");
                 } else {
-                	numeroEnBinario.setText("ERROR: Número no válido, ingrese otro");
-                	numeroEnOctal.setText("ERROR: Número no válido, ingrese otro");
-                	numeroEnDecimal.setText("ERROR: Número no válido, ingrese otro");
+                	numeroEnBinario.setText("ERROR: Numero no valido, ingrese otro");
+                	numeroEnOctal.setText("ERROR: Numero no valido, ingrese otro");
+                	numeroEnDecimal.setText("ERROR: Numero no valido, ingrese otro");
                 }
+                
             }
         });
 
@@ -161,7 +171,68 @@ public class Conversor_Bases_Numericas {
         }
     }
     
-    
+    public static void drawNRZI(String numeroEditable, JComboBox base2) {
+    	String Binary = transformarDecimalABase(numeroEditable, base2.getSelectedIndex()+2);
+    	class NRZI extends JPanel {
+        	
+        	@Override
+        	protected void paintComponent(Graphics g) {
+        		
+        		int count = 0;
+        		String actual;
+        		
+        		int large = Binary.length();
+        		int space = 500/large;
+        
+        		int high = 25;
+        		int low = 75;
+        		int in = 25;
+        		
+        		String one = "1";
+        		
+        		int initial = 10;
+        		int end = initial + space;
+        		
+        		super.paintComponent(g);
+        		g.setColor(Color.RED);
+        		
+        		while(count < large) {
+        			actual = Binary.substring(count,count+1);
+        			//System.out.println((count + 1) + " " + actual);
+        			//System.out.println(initial);
+        			//System.out.println(end);
+        			if(actual.equals(one)) {
+        				g.drawLine(initial, 25, initial, 75);
+        				if(in == 25) {
+        					in = 75;
+        				}else {
+        					in = 25;
+        				}
+        				g.drawLine(initial, in, end, in);
+        			}else {
+        				g.drawLine(initial, in, end, in);
+        			}
+        			initial = end;
+        			end = initial + space;
+        			count++;
+        		}
+        	}
+        	
+        	public void drawNRZI() {
+        		JFrame.setDefaultLookAndFeelDecorated(true);
+        		JFrame window = new JFrame("NRZI");
+        		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        		window.setBackground(Color.black);
+        		window.setSize(535, 150);
+        		NRZI panel = new NRZI();
+        		window.add(panel);
+        		window.setVisible(true);
+        	}
+        	
+        }
+        NRZI draw = new NRZI();
+        draw.drawNRZI();
+    }
  
     private static boolean ComprobarNumero(String numero, int base){
         if (numero.contains("."))   numero = numero.replaceFirst("\\.","");
