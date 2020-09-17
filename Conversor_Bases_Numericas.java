@@ -1,4 +1,6 @@
+import java.awt.Choice;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -13,6 +15,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.table.TableColumn;
+
 import java.awt.geom.Line2D;
 
 public class Conversor_Bases_Numericas {
@@ -35,7 +39,7 @@ public class Conversor_Bases_Numericas {
         JButton boton = new JButton("Convertir");
         
         JFrame x = new JFrame("TAREA DISENO LOGICO");
-        x.setLayout(new GridBagLayout());
+        x.setLayout(new GridBagLayout());       
         
         
         //ACA SE GENERAN LOS TEXTOS EN PANTALLA
@@ -44,22 +48,66 @@ public class Conversor_Bases_Numericas {
         x.add(new JLabel("Octal "), new GridBagConstraints(0,6,1,1,0,0,21,0,new Insets(4,4,2,2),0,0));
         x.add(new JLabel("Decimal "), new GridBagConstraints(0,7,1,1,0,0,21,0,new Insets(2,4,2,2),0,0));
         x.add(new JLabel("Hilera en Binario "), new GridBagConstraints(0,8,1,1,0,0,21,0,new Insets(2,4,2,2),0,0));
-        x.add(new JLabel("Bit de Falla "), new GridBagConstraints(0,9,1,1,0,0,21,0,new Insets(2,4,2,2),0,0));
-        x.add(numeroDeUsuario,                new GridBagConstraints(1,0,3,1,0,0,21,2,new Insets(4,2,2,4),0,0));
+        x.add(new JLabel("Paridad "), new GridBagConstraints(0,9,1,1,0,0,21,0,new Insets(2,4,2,2),0,0));
+        x.add(new JLabel("Bit de Falla "), new GridBagConstraints(0,11,1,1,0,0,21,0,new Insets(2,4,2,2),0,0));
+        x.add(numeroDeUsuario,new GridBagConstraints(1,0,3,1,0,0,21,2,new Insets(4,2,2,4),0,0));
     
         //ACA POSICIONAMOS LAS COSAS
         x.add(boton,  new GridBagConstraints(3,2,1,1,0,0,10,0,new Insets(2,4,4,2),0,0));
         x.add(numeroEnBinario,new GridBagConstraints(1,4,3,1,1,1,10,2,new Insets(2,2,4,4),0,0));
         x.add(numeroEnOctal,new GridBagConstraints(3,6,6,1,1,1,10,2,new Insets(2,2,4,4),0,0));
-        x.add(numeroEnDecimal,new GridBagConstraints(3,7,12,1,1,1,10,2,new Insets(2,2,4,4),0,0));
-        x.add(hileraEnBinario,new GridBagConstraints(3,8,12,1,1,1,10,2,new Insets(2,2,4,4),0,0));
-        x.add(bitDeFalla,new GridBagConstraints(3,9,12,1,1,1,10,2,new Insets(2,2,4,4),0,0));
+        x.add(numeroEnDecimal,new GridBagConstraints(3,7,5,1,1,1,10,2,new Insets(2,2,4,4),0,0));
+        x.add(hileraEnBinario,new GridBagConstraints(3,8,5,1,1,1,10,2,new Insets(2,2,4,4),0,0));
+        x.add(bitDeFalla,new GridBagConstraints(3,11,5,1,1,1,10,2,new Insets(2,2,4,4),0,0));
+        
+        Choice ParidadChooser = new Choice();
+        ParidadChooser.add("Par");
+        ParidadChooser.add("Impar");
+        x.add(ParidadChooser, new GridBagConstraints(3,9,1,1,0,0,21,0,new Insets(4,4,2,2),0,0));
+        
+        Hamming table = new Hamming();
+        
+        TableColumn column = null;
+        for (int i = 0; i < 18; i++) {
+            column = table.table.getColumnModel().getColumn(i);
+            if (i == 0) {
+                column.setPreferredWidth(75); //first column is bigger
+            } else {
+                column.setPreferredWidth(25);
+            }
+        }
+        
+        
+        for (int i = 0; i < 20; i++) {
+            column = table.table2.getColumnModel().getColumn(i);
+            if (i == 0) {
+                column.setPreferredWidth(50); //first column is bigger
+            } else if(i == 19){
+            	column.setPreferredWidth(30);
+            }else if( i == 18){
+            	column.setPreferredWidth(50);
+            }else
+            { 
+                column.setPreferredWidth(25);
+            }
+        }
+        
+        x.add(new JLabel("Cálculo de los bits de paridad en el código Hamming"), new GridBagConstraints(10,0,1,1,0,0,10,0,new Insets(0,0,0,0),0,0));
+        x.add(table.table.getTableHeader(),new GridBagConstraints(10,1,1,1,0,0,10,0,new Insets(0,0,4,4),0,0));
+        x.add(table.table,new GridBagConstraints(10,2,1,6,0,0,10,0,new Insets(0,0,4,4),0,0));
+        
+        
+        
+        x.add(new JLabel("Cálculo de los bits de paridad en el código Hamming"), new GridBagConstraints(10,8,1,1,0,0,10,0,new Insets(0,0,0,0),0,0));
+        x.add(table.table2.getTableHeader(),new GridBagConstraints(10,9,1,1,0,0,10,0,new Insets(0,0,8,8),0,0));
+        x.add(table.table2,new GridBagConstraints(10,10,1,8,0,0,10,0,new Insets(0,0,8,8),0,0));
+
+     
         
         x.setResizable(false);
         x.pack();
         x.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         x.setLocationRelativeTo(null);
-       
         
         boton.addActionListener(new ActionListener(){
 
@@ -87,6 +135,8 @@ public class Conversor_Bases_Numericas {
                     numeroEnBinario.setText( transformarDecimalABase(numeroEditable, base2.getSelectedIndex()+2) );
                     numeroEnOctal.setText( transformarDecimalABase(numeroEditable, base2.getSelectedIndex()+8) );
                     numeroEnDecimal.setText( transformarDecimalABase(numeroEditable, base2.getSelectedIndex()+10) );
+                    Hamming.Fila(1, transformarDecimalABase(numeroEditable, base2.getSelectedIndex()+2),x);
+                    x.repaint();
                     
                     //ACA SE LLAMA LA FUNCIÓN QUE DIBUJA EL NRZI
                     drawNRZI(numeroEditable, base2);
