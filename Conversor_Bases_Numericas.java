@@ -135,7 +135,8 @@ public class Conversor_Bases_Numericas {
                     numeroEnBinario.setText( transformarDecimalABase(numeroEditable, base2.getSelectedIndex()+2) );
                     numeroEnOctal.setText( transformarDecimalABase(numeroEditable, base2.getSelectedIndex()+8) );
                     numeroEnDecimal.setText( transformarDecimalABase(numeroEditable, base2.getSelectedIndex()+10) );
-                    Hamming.Fila(1, transformarDecimalABase(numeroEditable, base2.getSelectedIndex()+2),x);
+                    Hamming.Fila(1, transformarDecimalABase(numeroEditable, base2.getSelectedIndex()+2),x,
+                    		ParidadChooser.getItem(ParidadChooser.getSelectedIndex()));
                     x.repaint();
                     
                     //ACA SE LLAMA LA FUNCIÓN QUE DIBUJA EL NRZI
