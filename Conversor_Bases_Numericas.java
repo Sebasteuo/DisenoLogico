@@ -32,6 +32,7 @@ public class Conversor_Bases_Numericas {
         final JTextField numeroEnDecimal = new JTextField(22);   numeroEnDecimal.setEditable(false);
         final JTextField hileraEnBinario = new JTextField(22);   hileraEnBinario.setEditable(false);
         final JTextField bitDeFalla = new JTextField(22);   hileraEnBinario.setEditable(false);
+        final JTextField errorHamming = new JTextField(22);   errorHamming.setEditable(false);
         
         final JComboBox base1 = new JComboBox(valoresBases); base1.setSelectedIndex(14); //Ac√° se selecciona que sea Hexadecimal directo
         final JComboBox base2 = new JComboBox(valoresBases);
@@ -47,18 +48,20 @@ public class Conversor_Bases_Numericas {
         x.add(new JLabel("Binario "), new GridBagConstraints(0,4,1,1,0,0,21,0,new Insets(4,4,2,2),0,0));
         x.add(new JLabel("Octal "), new GridBagConstraints(0,6,1,1,0,0,21,0,new Insets(4,4,2,2),0,0));
         x.add(new JLabel("Decimal "), new GridBagConstraints(0,7,1,1,0,0,21,0,new Insets(2,4,2,2),0,0));
-        x.add(new JLabel("Hilera en Binario "), new GridBagConstraints(0,8,1,1,0,0,21,0,new Insets(2,4,2,2),0,0));
+        x.add(new JLabel("Binario con error"), new GridBagConstraints(0,8,1,1,0,0,21,0,new Insets(2,4,2,2),0,0));
         x.add(new JLabel("Paridad "), new GridBagConstraints(0,9,1,1,0,0,21,0,new Insets(2,4,2,2),0,0));
-        x.add(new JLabel("Bit de Falla "), new GridBagConstraints(0,11,1,1,0,0,21,0,new Insets(2,4,2,2),0,0));
+        x.add(new JLabel("Bit a cambiar "), new GridBagConstraints(0,1,1,1,0,0,21,0,new Insets(2,4,2,2),0,0));
+        x.add(new JLabel("Bit de error con Hamming "), new GridBagConstraints(0,17,1,1,0,0,21,0,new Insets(4,4,2,2),0,0));
         x.add(numeroDeUsuario,new GridBagConstraints(1,0,3,1,0,0,21,2,new Insets(4,2,2,4),0,0));
     
         //ACA POSICIONAMOS LAS COSAS
         x.add(boton,  new GridBagConstraints(3,2,1,1,0,0,10,0,new Insets(2,4,4,2),0,0));
-        x.add(numeroEnBinario,new GridBagConstraints(1,4,3,1,1,1,10,2,new Insets(2,2,4,4),0,0));
+        x.add(numeroEnBinario,new GridBagConstraints(3,4,3,1,1,1,10,2,new Insets(2,2,4,4),0,0));
         x.add(numeroEnOctal,new GridBagConstraints(3,6,6,1,1,1,10,2,new Insets(2,2,4,4),0,0));
         x.add(numeroEnDecimal,new GridBagConstraints(3,7,5,1,1,1,10,2,new Insets(2,2,4,4),0,0));
         x.add(hileraEnBinario,new GridBagConstraints(3,8,5,1,1,1,10,2,new Insets(2,2,4,4),0,0));
-        x.add(bitDeFalla,new GridBagConstraints(3,11,5,1,1,1,10,2,new Insets(2,2,4,4),0,0));
+        x.add(bitDeFalla,new GridBagConstraints(3,1,5,1,1,1,10,2,new Insets(2,2,4,4),0,0));
+        x.add(errorHamming,new GridBagConstraints(3,17,5,1,1,1,10,2,new Insets(2,2,4,4),0,0));
         
         Choice ParidadChooser = new Choice();
         ParidadChooser.add("Par");
@@ -114,6 +117,8 @@ public class Conversor_Bases_Numericas {
 			@Override public void actionPerformed(ActionEvent e) {
             	numeroDeUsuario.setText(numeroDeUsuario.getText().toUpperCase());
                 String numeroEditable = numeroDeUsuario.getText();
+                bitDeFalla.setText(bitDeFalla.getText().toUpperCase());
+                int fallo = Integer.parseInt(bitDeFalla.getText());
                 if(ComprobarNumero(numeroEditable, base1.getSelectedIndex()+2)){
                     int cont = 0;
                     if (numeroEditable.contains(".")){
@@ -157,10 +162,53 @@ public class Conversor_Bases_Numericas {
                 	numeroEnDecimal.setText("ERROR: Numero no valido, ingrese otro");
                 }
                 
+                String paridad1 = table.p1 + table.p2 + table.p3 +table.p4 + table.p5;
+                String dataChanged = dataError(fallo, transformarDecimalABase(numeroEditable, base2.getSelectedIndex()+2));
+                
+                //AQUI SE HACE LA L”GICA DE LA TABLA 2 EN LA TABLA 1
+                hileraEnBinario.setText(dataChanged);
+                Hamming.Fila(1, dataChanged,x,ParidadChooser.getItem(ParidadChooser.getSelectedIndex()));
+                String paridad2 = table.p1 + table.p2 + table.p3 +table.p4 + table.p5;
+                String bitFallado = bitFallo(paridad1,paridad2);
+                errorHamming.setText(binaryToDecimal(bitFallado));
             }
         });
 
         x.setVisible(true);
+    }
+
+    
+    public static String dataError(int error, String data) {
+    	String bitToChange = data.substring(error-1, error);
+    	String change;
+    	String result;
+    	if(bitToChange.equals("1")) {
+    		change = "0";
+    	}else {
+    		change = "1";
+    	}
+    	if(error==1) {
+    		result = change + data.substring(1);
+    	}else if(error == 12){
+    		result = data.substring(0, 11) + change;
+    	}else {
+    		result = data.substring(0, error-1) + change + data.substring(error) ;
+    	}
+    	return result;
+    }
+    
+    public static String bitFallo(String paridad1, String paridad2) {
+    	int count = 0;
+    	String binaryResult = "";
+    	while(count <= 4) {
+    		if(paridad1.substring(count, count+1).equals(paridad2.substring(count, count+1))) {
+    			binaryResult = binaryResult + "0";
+    		}else {
+    			binaryResult = binaryResult + "1";
+    		}
+    		count++;
+    	}
+    	return binaryResult;
     }
     
     //SE TRANSFORMA A BASE DECIMAL
@@ -285,6 +333,20 @@ public class Conversor_Bases_Numericas {
         draw.drawNRZI();
     }
  
+    public static String binaryToDecimal(String binary) {
+    	String decimal = "";
+    	String stringBit;
+    	int result = 0;
+    	int count = 0;
+    	int lenght = binary.length();
+    	while(count < lenght) {
+    		stringBit = binary.substring(count, count+1);
+    		result += Integer.parseInt(stringBit)*Math.pow(2, count);
+    		count++;
+    	}
+    	return decimal+result;
+    }
+    
     private static boolean ComprobarNumero(String numero, int base){
         if (numero.contains("."))   numero = numero.replaceFirst("\\.","");
         if (numero.startsWith("-")) numero = numero.replaceFirst("\\-","");
