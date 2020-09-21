@@ -98,7 +98,7 @@ public class Conversor_Bases_Numericas {
         
         
         
-        x.add(new JLabel("Cálculo de los bits de paridad en el código Hamming"), new GridBagConstraints(10,8,1,1,0,0,10,0,new Insets(0,0,0,0),0,0));
+        x.add(new JLabel("Comprobación de los bits de paridad"), new GridBagConstraints(10,8,1,1,0,0,10,0,new Insets(0,0,0,0),0,0));
         x.add(table.table2.getTableHeader(),new GridBagConstraints(10,9,1,1,0,0,10,0,new Insets(0,0,8,8),0,0));
         x.add(table.table2,new GridBagConstraints(10,10,1,8,0,0,10,0,new Insets(0,0,8,8),0,0));
 

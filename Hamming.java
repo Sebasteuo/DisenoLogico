@@ -12,6 +12,13 @@ public class Hamming {
 	static String p3;
 	static String p4;
 	static String p5;
+	static String[] fila1;
+	static String[] fila2;
+	static String[] fila3;
+	static String[] fila4;
+	static String[] fila5;
+	static String uno = "1";    
+  	static char par= uno.charAt(0);
 	
 	//Inicializa la tabla para agregar los bits de paridad
 	static String[] columnNames = {"","P1","P2","D1","P3","D2","D3","D4","P4","D5","D6","D7","D8","D9","D10","D11","P5","D12"};
@@ -71,11 +78,17 @@ public class Hamming {
     
     	 Hamming.data[0] = fila;
     	 //Calcula los bit de paridad y llena la fila correspondiente
+    	 // paridad1(cadena,paridad);
     	 paridad1(cadena,paridad);
     	 paridad2(cadena,paridad);
     	 paridad3(cadena,paridad);
     	 paridad4(cadena,paridad);
     	 paridad5(cadena,paridad);
+    	 dibujaTabla(fila1,1);
+    	 dibujaTabla(fila2,2);
+    	 dibujaTabla(fila3,3);
+    	 dibujaTabla(fila4,4);
+    	 dibujaTabla(fila5,5);
     	 aplicarParidad(cadena);
     	 
     	 
@@ -83,111 +96,87 @@ public class Hamming {
 
     }
     
-    private static void paridad1(String dato, String paridad) {
+    private static String paridad1(String dato, String paridad) {
     
-    	String uno = "1";    
-      	char par= uno.charAt(0);
+    	
     	String cadena = dato.substring(0, 1) + dato.substring(1, 2)+dato.substring(3, 4)+dato.substring(4, 5)+
     	dato.substring(6, 7)+dato.substring(8, 9)+dato.substring(10, 11)+dato.substring(11);
-    	System.out.print(cadena);
     	
-    	if((esPar(contarCaracteres(cadena, par))&& paridad == "Par")||(!esPar(contarCaracteres(cadena, par))&& paridad == "Impar")) {
-    		p1 = "0";
-    	}else {
-    		p1 = "1";	
-    	}
+    	p1 = CalcularParidad(cadena, paridad);
     	
     	String fila[] = { "P1",p1,"", cadena.substring(0, 1),"",cadena.substring(1, 2),
     	    	"",cadena.substring(2, 3),"",cadena.substring(3, 4),
     	    	"", cadena.substring(4, 5),"",cadena.substring(5, 6),
     	    	"",cadena.substring(6, 7), "",cadena.substring(7, 8)};
+    	fila1 = fila;
     	    	
-    	Hamming.data[1] = fila;
+    	return  CalcularParidad(cadena, paridad);
+    	
     	
     	
     }
     
-    private static void paridad2(String dato, String paridad) {
+    private static String paridad2(String dato, String paridad) {
     	
-    	String uno = "1";    
-      	char par= uno.charAt(0);
+    
     	String cadena = dato.substring(0, 1) + dato.substring(2, 4)+dato.substring(5, 7)+dato.substring(9, 11);
-    	System.out.print(cadena);
     	
-    	if((esPar(contarCaracteres(cadena, par)) && paridad == "Par")||(!esPar(contarCaracteres(cadena, par))&& paridad == "Impar")) {
-    		p2 = "0";
-    	}else {
-    		p2 = "1";	
-    	}
+    	p2 = CalcularParidad(cadena, paridad);
     	
     	String fila[] = { "P2","",p2, cadena.substring(0, 1),"",
     	    	"",cadena.substring(1, 2),cadena.substring(2, 3),"",
     	    	"", cadena.substring(3, 4),cadena.substring(4, 5),"",
     	    	"",cadena.substring(5, 6),cadena.substring(6),"",""};
-    	    	
-    	Hamming.data[2] = fila;
+    	fila2 = fila;
+    	return CalcularParidad(cadena, paridad);
     	
     	
     }
-  private static void paridad3(String dato, String paridad) {
+  private static String paridad3(String dato, String paridad) {
     	
-	  String uno = "1";    
-	  	char par= uno.charAt(0);
+
     	String cadena = dato.substring(1, 4) + dato.substring(7, 11);
-    	System.out.print(cadena);
     	
-    	if((esPar(contarCaracteres(cadena, par))&& paridad == "Par")||(!esPar(contarCaracteres(cadena, par))&& paridad == "Impar")) {
-    		p3 = "0";
-    	}else {
-    		p3 = "1";	
-    	}
-    	
+    	p3 = CalcularParidad(cadena, paridad);
+
     	String fila[] = { "P3","","","",p3, cadena.substring(0, 1),cadena.substring(1, 2),cadena.substring(2, 3),
     	    	"","","","",cadena.substring(3, 4),cadena.substring(4, 5),
     	    	cadena.substring(5, 6),cadena.substring(6),"",""};
+    	fila3 = fila;
     	    	
-    	Hamming.data[3] = fila;
+    	return CalcularParidad(cadena, paridad);
     	
     	
     }
-  private static void paridad4(String dato, String paridad) {
+  private static String paridad4(String dato, String paridad) {
   	
-	  String uno = "1";    
-	  	char par= uno.charAt(0);
+
   	String cadena = dato.substring(4, 11);
-  	System.out.print(cadena);
   	
-  	if((esPar(contarCaracteres(cadena, par))&& paridad == "Par")||(!esPar(contarCaracteres(cadena, par))&& paridad == "Impar")) {
-  		p4 = "0";
-  	}else {
-  		p4 = "1";	
-  	}
+  	p4 = CalcularParidad(cadena, paridad);
   	
   	String fila[] = { "P4","","","","","","","",p4, cadena.substring(0, 1),cadena.substring(1, 2),
   			cadena.substring(2, 3),cadena.substring(3, 4),cadena.substring(4, 5),
   	    	cadena.substring(5, 6),cadena.substring(6),"",""};
+  	fila4 = fila;
   	    	
-  	Hamming.data[4] = fila;
+  	return CalcularParidad(cadena, paridad);
   	
   	
   }
   
-  private static void paridad5(String dato, String paridad) {
+  private static String paridad5(String dato, String paridad) {
 	  
-	String uno = "1";    
-  	char par= uno.charAt(0);
+	
   	String cadena = dato.substring(11);
-  	System.out.print(cadena);
   	
-  	if((esPar(contarCaracteres(cadena, par))&& paridad == "Par")||(!esPar(contarCaracteres(cadena, par))&& paridad == "Impar")) {
-  		p5 = "0";
-  	}else {
-  		p5 = "1";	
-  	}
+  	p5 = CalcularParidad(cadena, paridad);
   	
   	String fila[] = { "P5","","", "","","","","","", "","","","","","","",p5,cadena.substring(0)};
+  	
+  	fila5 = fila;
   	    	
-  	Hamming.data[5] = fila;
+  	return CalcularParidad(cadena, paridad);
   	
   	
   }
@@ -215,6 +204,24 @@ public class Hamming {
     	    	cadena.substring(9, 10),cadena.substring(10, 11), p5,cadena.substring(11, 12)};
     	    	
     	Hamming.data[6] = fila;
+    }
+    
+    static String CalcularParidad(String cadena, String paridad) {
+    	String p;
+    	if((esPar(contarCaracteres(cadena, par))&& paridad == "Par")||(!esPar(contarCaracteres(cadena, par))&& paridad == "Impar")) {
+    		p = "0";
+    	}else {
+    		p = "1";	
+    	}
+    	
+    	return p;
+    	
+    	
+    }
+    
+    static void dibujaTabla(String[] fila, int pos) {
+    	Hamming.data[pos] = fila;
+    	
     }
     
 
