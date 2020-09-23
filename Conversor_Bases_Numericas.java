@@ -167,13 +167,13 @@ public class Conversor_Bases_Numericas {
                 
                 //AQUI SE HACE LA LÓGICA DE LA TABLA 2 EN LA TABLA 1
                 hileraEnBinario.setText(dataChanged);
-                Hamming.Fila(1, dataChanged,x,ParidadChooser.getItem(ParidadChooser.getSelectedIndex()));
+                Hamming.Fila(2, dataChanged,x,ParidadChooser.getItem(ParidadChooser.getSelectedIndex()));
                 String paridad2 = table.p1 + table.p2 + table.p3 +table.p4 + table.p5;
                 String bitFallado = bitFallo(paridad1,paridad2);
                 errorHamming.setText(binaryToDecimal(bitFallado));
             }
         });
-
+        x.repaint();
         x.setVisible(true);
     }
 
@@ -203,11 +203,16 @@ public class Conversor_Bases_Numericas {
     	while(count <= 4) {
     		if(paridad1.substring(count, count+1).equals(paridad2.substring(count, count+1))) {
     			binaryResult = binaryResult + "0";
+    			Hamming.data2[count+1][18] = "Correcto";
+    			Hamming.data2[count+1][19] = "0";
     		}else {
     			binaryResult = binaryResult + "1";
+    			Hamming.data2[count+1][18] = "Error";
+    			Hamming.data2[count+1][19] = "1";
     		}
     		count++;
     	}
+    	
     	return binaryResult;
     }
     
