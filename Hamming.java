@@ -79,7 +79,6 @@ public class Hamming {
     	cadena.substring(5, 6), cadena.substring(6, 7),cadena.substring(7, 8),cadena.substring(8, 9),
     	cadena.substring(9, 10),cadena.substring(10, 11), "",cadena.substring(11, 12)};
     	
-    	
     
     	 
     	 //Calcula los bit de paridad y llena la fila correspondiente
@@ -101,9 +100,10 @@ public class Hamming {
     	 dibujaTabla(fila23,3,2);
     	 dibujaTabla(fila24,4,2);
     	 dibujaTabla(fila25,5,2);
+    	 aplicarParidad(cadena,1);
     	 }
-    	 aplicarParidad(cadena);
     	 
+    	 aplicarParidad(cadena,2);
     	 
     	 
 
@@ -236,19 +236,37 @@ public class Hamming {
     }
     
     //Llena la hilera con los bits de datos y de paridad
-    static void aplicarParidad(String cadena) {
+    static void aplicarParidad(String cadena, int tabla) {
+    	if(tabla == 1) {
     	String fila[] = { "Con paridad",p1,p2, cadena.substring(0, 1),p3,cadena.substring(1, 2),
     	    	cadena.substring(2, 3),cadena.substring(3, 4),p4,cadena.substring(4, 5),
     	    	cadena.substring(5, 6), cadena.substring(6, 7),cadena.substring(7, 8),cadena.substring(8, 9),
     	    	cadena.substring(9, 10),cadena.substring(10, 11), p5,cadena.substring(11, 12)};
     	    	
     	Hamming.data[6] = fila;
+    	
     	String fila2[] = { "Palabra",p1,p2, cadena.substring(0, 1),p3,cadena.substring(1, 2),
     	    	cadena.substring(2, 3),cadena.substring(3, 4),p4,cadena.substring(4, 5),
     	    	cadena.substring(5, 6), cadena.substring(6, 7),cadena.substring(7, 8),cadena.substring(8, 9),
     	    	cadena.substring(9, 10),cadena.substring(10, 11), p5,cadena.substring(11, 12),"1",""};
     	    	
     	Hamming.data2[0] = fila2;
+    	}else {
+    		Hamming.data2[0][3] =cadena.substring(0, 1);
+    		Hamming.data2[0][5] =cadena.substring(1, 2);
+    		Hamming.data2[0][6] =cadena.substring(2, 3);
+    		Hamming.data2[0][7] =cadena.substring(3, 4);
+    		Hamming.data2[0][9] =cadena.substring(4, 5);
+    		Hamming.data2[0][10] =cadena.substring(5, 6);
+    		Hamming.data2[0][11] =cadena.substring(6, 7);
+    		Hamming.data2[0][12] =cadena.substring(7, 8);
+    		Hamming.data2[0][13] =cadena.substring(8, 9);
+    		Hamming.data2[0][14] =cadena.substring(9, 10);
+    		Hamming.data2[0][15] =cadena.substring(10, 11);
+    		Hamming.data2[0][17] =cadena.substring(11);
+    		
+    		
+    	}
     }
     
     static String CalcularParidad(String cadena, String paridad) {
