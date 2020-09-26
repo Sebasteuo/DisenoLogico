@@ -272,9 +272,9 @@ public class Hamming {
     static String CalcularParidad(String cadena, String paridad) {
     	String p;
     	if((esPar(contarCaracteres(cadena, par))&& paridad == "Par")||(!esPar(contarCaracteres(cadena, par))&& paridad == "Impar")) {
-    		p = "0";
+    		p = "1";
     	}else {
-    		p = "1";	
+    		p = "0";	
     	}
     	
     	return p;
