@@ -31,7 +31,7 @@ public class Conversor_Bases_Numericas {
         final JTextField numeroEnOctal = new JTextField(22);   numeroEnOctal.setEditable(false);
         final JTextField numeroEnDecimal = new JTextField(22);   numeroEnDecimal.setEditable(false);
         final JTextField hileraEnBinario = new JTextField(22);   hileraEnBinario.setEditable(false);
-        final JTextField bitDeFalla = new JTextField(22);   hileraEnBinario.setEditable(false);
+        final JTextField bitDeFalla = new JTextField(22);   
         final JTextField errorHamming = new JTextField(22);   errorHamming.setEditable(false);
         
         final JComboBox base1 = new JComboBox(valoresBases); base1.setSelectedIndex(14); //Ac√° se selecciona que sea Hexadecimal directo
@@ -115,12 +115,15 @@ public class Conversor_Bases_Numericas {
         boton.addActionListener(new ActionListener(){
 
 			@Override public void actionPerformed(ActionEvent e) {
+				
             	numeroDeUsuario.setText(numeroDeUsuario.getText().toUpperCase());
                 String numeroEditable = numeroDeUsuario.getText();
-                bitDeFalla.setText(bitDeFalla.getText().toUpperCase());
-                int fallo = Integer.parseInt(bitDeFalla.getText());
-                if(ComprobarNumero(numeroEditable, base1.getSelectedIndex()+2)){
+                
+                String errorBit = bitDeFalla.getText();
+                bitDeFalla.setText(bitDeFalla.getText().toUpperCase()); 
+                if(ComprobarNumero(numeroEditable, base1.getSelectedIndex()+2) && comprobarBit(errorBit, bitDeFalla)){
                     int cont = 0;
+                    int fallo = Integer.parseInt(bitDeFalla.getText());
                     if (numeroEditable.contains(".")){
                         cont = (-1)*(numeroEditable.substring(numeroEditable.indexOf(".")+1).length());
                     }
@@ -146,31 +149,28 @@ public class Conversor_Bases_Numericas {
                     
                     //ACA SE LLAMA LA FUNCI”N QUE DIBUJA EL NRZI
                     drawNRZI(numeroEditable, base2);
+                    String paridad1 = table.p1 + table.p2 + table.p3 +table.p4 + table.p5;
+                    String dataChanged = dataError(fallo, transformarDecimalABase(numeroEditable, base2.getSelectedIndex()+2));
                     
+                    //AQUI SE HACE LA L”GICA DE LA TABLA 2 EN LA TABLA 1
+                    hileraEnBinario.setText(dataChanged);
+                    Hamming.Fila(2, dataChanged,x,ParidadChooser.getItem(ParidadChooser.getSelectedIndex()));
+                    String paridad2 = table.p1 + table.p2 + table.p3 +table.p4 + table.p5;
+                    String bitFallado = bitFallo(paridad1,paridad2);
+                    errorHamming.setText(binaryToDecimal(bitFallado));
                     //COMPROBACION DEL FORMATO DEL NUMERO
                 } else if(numeroEditable.contains(",")){
-                	numeroEnBinario.setText("ERROR: Formato Invalido");
-                	numeroEnOctal.setText("ERROR: Formato Invalido");
-                	numeroEnDecimal.setText("ERROR: Formato Invalido");
+                	numeroDeUsuario.setText("Ingrese un numero valido");
                 } else if (numeroEditable.isEmpty()){
-                	numeroEnBinario.setText("Ingrese un numero");
-                	numeroEnOctal.setText("Ingrese un numero");
-                	numeroEnDecimal.setText("Ingrese un numero");
+                	numeroDeUsuario.setText("Ingrese un numero valido");
                 } else {
-                	numeroEnBinario.setText("ERROR: Numero no valido, ingrese otro");
-                	numeroEnOctal.setText("ERROR: Numero no valido, ingrese otro");
-                	numeroEnDecimal.setText("ERROR: Numero no valido, ingrese otro");
+                	if(ComprobarNumero(numeroEditable, base1.getSelectedIndex()+2)) {
+                	}else {
+                		numeroDeUsuario.setText("Ingrese un numero valido");
+                	}
                 }
                 
-                String paridad1 = table.p1 + table.p2 + table.p3 +table.p4 + table.p5;
-                String dataChanged = dataError(fallo, transformarDecimalABase(numeroEditable, base2.getSelectedIndex()+2));
                 
-                //AQUI SE HACE LA L”GICA DE LA TABLA 2 EN LA TABLA 1
-                hileraEnBinario.setText(dataChanged);
-                Hamming.Fila(2, dataChanged,x,ParidadChooser.getItem(ParidadChooser.getSelectedIndex()));
-                String paridad2 = table.p1 + table.p2 + table.p3 +table.p4 + table.p5;
-                String bitFallado = bitFallo(paridad1,paridad2);
-                errorHamming.setText(binaryToDecimal(bitFallado));
             }
         });
         x.repaint();
@@ -350,6 +350,19 @@ public class Conversor_Bases_Numericas {
     		count++;
     	}
     	return decimal+result;
+    }
+    
+    public static boolean comprobarBit(String word, JTextField bit) {
+    	String[] values = {"1","2","3","4","5","6","7","8","9","10","11","12"};
+    	int count = 0;
+    	while(count<12) {
+    		if(values[count].equals(word)) {
+    			return true;
+    		}
+    		count++;
+    	}
+    	bit.setText("Ingrese un numero v·lido");
+		return false;
     }
     
     private static boolean ComprobarNumero(String numero, int base){
